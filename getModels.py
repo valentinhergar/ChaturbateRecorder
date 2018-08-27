@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup
 Config = configparser.ConfigParser()
 Config.read(sys.path[0] + "/config.conf")
 genders = re.sub(' ', '', Config.get('settings', 'genders')).split(",")
-lastPage = {'female': 100, 'couple': 100, 'trans': 100, 'male': 100}
+lastPage = {'female': 10, 'couple': 10, 'trans': 10, 'male': 10}
 
 
 def getOnlineModels():
@@ -21,13 +21,13 @@ def getOnlineModels():
             attempt = 1
             while attempt <= 3:
                 try:
-                    timeout = gevent.Timeout(8)
+                    timeout = gevent.Timeout(15)
                     timeout.start()
                     URL = "https://chaturbate.com/{gender}-cams/?page={page}".format(gender=gender.lower(), page=page)
                     result = requests.request('GET', URL)
                     result = result.text
                     soup = BeautifulSoup(result, 'lxml')
-                    if lastPage[gender] == 100:
+                    if lastPage[gender] == 10:
                         lastPage[gender] = int(soup.findAll('a', {'class': 'endless_page_link'})[-2].string)
                     if int(soup.findAll('li', {'class': 'active'})[1].string) == page:
                         LIST = soup.findAll('ul', {'class': 'list'})[0]
